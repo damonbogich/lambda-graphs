@@ -33,6 +33,8 @@ def earliest_ancestor(ancestors, starting_node):
 
     s.push([starting_node])
 
+    paths_to_ancestors = []
+
     while s.size() > 0:
         current_path = s.pop()
         current_node = current_path[-1]
@@ -42,8 +44,10 @@ def earliest_ancestor(ancestors, starting_node):
 
             parents = get_parents(current_node, ancestors)
 
-            if parents == [] and s.size() == 0:
-                return current_node
+            if parents == []: #adding and s.size() == 0: to this and returning current node makes test pass, but shoulnt
+                paths_to_ancestors.append(current_path)
+                continue
+                # return current_node
  
             path_container = []
             for i in range(len(parents)):
@@ -53,7 +57,27 @@ def earliest_ancestor(ancestors, starting_node):
             print('hereeee', path_container)
             for path in path_container:     
                 s.push(path)
-   
+
+   #below code is to handle if there are multiple ancestors
+   #and how to find which one is oldest
+    if len(paths_to_ancestors) == 1:
+        return paths_to_ancestors[0][-1] 
+    else:
+        #find length of longest list(s) in paths to ancestor
+        longest = paths_to_ancestors[0]
+        longest_length = 0
+        for path in paths_to_ancestors:
+            if len(path) > len(longest):
+                longest = path
+        longest_length = len(longest)
+
+        #find the oldest ancestor with the smallest number:
+        potential_oldest_ancestors = []
+        for path in paths_to_ancestors:
+            if len(path) == longest_length:
+                potential_oldest_ancestors.append(path[-1])
+        return min(potential_oldest_ancestors)
+
 
 
 
